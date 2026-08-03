@@ -23,7 +23,7 @@ GitHub Actions가 유형별로 폴더를 정리함. 직접 커밋 안 해도 됨
  
 1. 크롬 웹스토어에서 [백준허브](https://chromewebstore.google.com/detail/ccammcjdkpgjmcpijpahlehmapgmphmk) 설치
 2. 확장 팝업 → `Authenticate with GitHub` → 인증
-3. `내 저장소 연결하기` 선택 → '플랫폼별로 정리' 선택 -> `sdoubleoj/2026-Algorithm-Study` 입력
+3. `내 저장소 연결하기` 선택 → '플랫폼별로 정리' 선택 -> `2026-Algorithm-Study` 입력
 4. 하단 `저장 경로 템플릿` 펼치기
 5. **프로그래머스** 칸에 아래 내용을 입력하고 `저장`
 
