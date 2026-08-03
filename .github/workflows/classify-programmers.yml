@@ -1,0 +1,105 @@
+name: Auto Classify Programmers Problems
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '프로그래머스/**'
+
+permissions:
+  contents: write
+
+# 제출이 연달아 푸시될 때 워크플로우가 동시에 돌며 push 충돌 나는 것 방지
+concurrency:
+  group: classify-programmers
+  cancel-in-progress: false
+
+jobs:
+  classify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run classification script
+        run: |
+          python - << 'EOF'
+          import os
+          import re
+          import shutil
+
+          base_dir = '프로그래머스'
+          if not os.path.isdir(base_dir):
+              print(f"{base_dir} 폴더가 존재하지 않습니다.")
+              raise SystemExit(0)
+
+          # 백준허브가 만드는 레벨 폴더: 0~5 또는 unrated
+          LEVEL_PATTERN = re.compile(r'^\d+$|^unrated$', re.IGNORECASE)
+
+          # 백준허브 README.md의 "### 구분" 섹션에 있는
+          # "코딩테스트 연습 > 스택/큐" 형태에서 유형명을 추출
+          CATEGORY_PATTERN = re.compile(r'코딩테스트\s*연습\s*>\s*([^>\n]+)')
+
+          def sanitize(name: str) -> str:
+              # "스택/큐" 처럼 경로에 쓸 수 없는 문자를 치환
+              return name.strip().replace('/', '-').replace('\\', '-')
+
+          moved = 0
+          for level in os.listdir(base_dir):
+              level_path = os.path.join(base_dir, level)
+              # 레벨 폴더(백준허브 원본 경로)만 탐색 → 이미 분류된 유형 폴더는 자동 스킵
+              if not os.path.isdir(level_path) or not LEVEL_PATTERN.match(level):
+                  continue
+
+              for problem in os.listdir(level_path):
+                  problem_path = os.path.join(level_path, problem)
+                  if not os.path.isdir(problem_path):
+                      continue
+
+                  category = 'Unclassified'
+                  readme_path = os.path.join(problem_path, 'README.md')
+                  if os.path.exists(readme_path):
+                      with open(readme_path, 'r', encoding='utf-8') as f:
+                          m = CATEGORY_PATTERN.search(f.read())
+                      if m:
+                          category = sanitize(m.group(1))
+
+                  # 최종 구조: 프로그래머스/{유형}/{레벨}/{문제폴더}
+                  dest_dir = os.path.join(base_dir, category, level, problem)
+                  os.makedirs(os.path.dirname(dest_dir), exist_ok=True)
+
+                  # 같은 문제를 재제출하면 백준허브가 원래 경로에 다시 푸시하므로,
+                  # 기존 분류본을 지우고 최신 제출로 교체
+                  if os.path.exists(dest_dir):
+                      shutil.rmtree(dest_dir)
+
+                  print(f"이동: {problem_path} -> {dest_dir}")
+                  shutil.move(problem_path, dest_dir)
+                  moved += 1
+
+              # 문제를 전부 옮겨 비어버린 레벨 폴더 정리
+              if os.path.isdir(level_path) and not os.listdir(level_path):
+                  os.rmdir(level_path)
+
+          print(f"총 {moved}개 문제 분류 완료")
+          EOF
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: 프로그래머스 문제 자동 분류 완료 [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "변경 사항이 없습니다."
+          fi
