@@ -26,12 +26,13 @@ GitHub Actions가 유형별로 폴더를 정리함. 직접 커밋 안 해도 됨
 3. `내 저장소 연결하기` 선택 → '플랫폼별로 정리' 선택 -> `sdoubleoj/2026-Algorithm-Study` 입력
 4. 하단 `저장 경로 템플릿` 펼치기
 5. **프로그래머스** 칸에 아래 내용을 입력하고 `저장`
+
 ```
     Programmers/{본인_영문_이름}/${level}/${id}. ${title}
 ```
  
-    - `{본인_영문_이름}` 부분만 자기 이름으로 바꿈. (예: `Programmers/sujeong/...`)
-    - `${level}`, `${id}`, `${title}` 은 **그대로** 입력. 백준허브가 알아서 치환함.
+- `{본인_영문_이름}` 부분만 자기 이름으로 바꿈. (예: `Programmers/sujeong/...`)
+- `${level}`, `${id}`, `${title}` 은 **그대로** 입력. 백준허브가 알아서 치환함.
  
 6. 프로그래머스에서 문제 하나를 풀어 제출한 뒤, 저장소 **Actions** 탭에서
    `Auto Classify Programmers Problems` 실행이 초록불인지 확인
