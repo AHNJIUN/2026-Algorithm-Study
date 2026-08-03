@@ -6,8 +6,8 @@
 - 언어: 각자 알아서
 - 학습 소스: 각자 알아서
     - 참고
-        - 이코테: https://github.com/ndb796/python-for-coding-test
-        - 큰돌 아저씨 인프런 강의: https://www.inflearn.com/course/10%EC%A3%BC%EC%99%84%EC%84%B1-%EC%BD%94%EB%94%A9%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%81%B0%EB%8F%8C?cid=326485&srsltid=AfmBOopuYg2CWVWd8DDa_f46872myZxhjez9Nz--P0kaYsh_8p4Z0hah
+        - [이코테](https://github.com/ndb796/python-for-coding-test)
+        - [큰돌 아저씨 인프런 강의](https://www.inflearn.com/course/10%EC%A3%BC%EC%99%84%EC%84%B1-%EC%BD%94%EB%94%A9%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%81%B0%EB%8F%8C?cid=326485&srsltid=AfmBOopuYg2CWVWd8DDa_f46872myZxhjez9Nz--P0kaYsh_8p4Z0hah)
 
 # 스터디 규칙
 
@@ -64,15 +64,15 @@
 
 ---
 
-| 주차 | 기간 | 폴더명 | 문제1 | 문제2 | 문제3 | 문제4 | 문제5 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 08/04 ~ 08/10 |  |  |  |  |  |  |
-| 2 | 08/11 ~ 08/17 |  |  |  |  |  |  |
-| 3 | 08/18 ~ 08/24 |  |  |  |  |  |  |
-| 4 | 08/25 ~ 08/31 |  |  |  |  |  |  |
-| 5 | 09/01 ~ 09/07 |  |  |  |  |  |  |
-| 6 | 09/08 ~ 09/14 |  |  |  |  |  |  |
-| 7 | 09/15 ~ 09/21 |  |  |  |  |  |  |
-| 8 | 09/22 ~ 09/28 |  |  |  |  |  |  |
-| 9 | 09/29 ~ 10/05 |  |  |  |  |  |  |
-| 10 | 10/06 ~ 10/12 |  |  |  |  |  |  |
+| 주차 | 기간 | 폴더명/문제1 | 폴더명/문제2 | 폴더명/문제3 | 폴더명/문제4 | 폴더명/문제5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 08/04 ~ 08/07 | [stack_queue/기능개발](https://school.programmers.co.kr/learn/courses/30/lessons/42586) | [dfs_bfs/게입 맵 최단거리](https://school.programmers.co.kr/learn/courses/30/lessons/1844) | [sort/가장 큰 수](https://school.programmers.co.kr/learn/courses/30/lessons/42746) | [dfs_bfs/타겟넘버](https://school.programmers.co.kr/learn/courses/30/lessons/43165) |  |
+| 2 | 08/10 ~ 08/14 |  |  |  |  |  |
+| 3 | 08/17 ~ 08/21 |  |  |  |  |  |
+| 4 | 08/24 ~ 08/28 |  |  |  |  |  |
+| 5 | 08/31 ~ 09/04 |  |  |  |  |  |
+| 6 | 09/07 ~ 09/11 |  |  |  |  |  |
+| 7 | 09/14 ~ 09/18 |  |  |  |  |  |
+| 8 | 09/21 ~ 09/25 |  |  |  |  |  |
+| 9 | 09/28 ~ 10/02 |  |  |  |  |  |
+| 10 | 10/05 ~ 10/09 |  |  |  |  |  |
