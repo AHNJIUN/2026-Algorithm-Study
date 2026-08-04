@@ -38,6 +38,25 @@ jobs:
               return name.strip().replace('/', '-').replace('\\', '-')
           if not os.path.isdir(BASE):
               print(f'{BASE} 폴더가 없습니다.'); raise SystemExit(0)
+          # BaekjoonHub가 Programmers/AHNJIUN/<레벨>/ 경로로 업로드하므로 최상위로 평탄화
+          UPLOAD = os.path.join(BASE, 'AHNJIUN')
+          if os.path.isdir(UPLOAD):
+              for entry in os.listdir(UPLOAD):
+                  src = os.path.join(UPLOAD, entry)
+                  dst = os.path.join(BASE, entry)
+                  if os.path.isdir(src) and os.path.isdir(dst):
+                      for item in os.listdir(src):
+                          item_dst = os.path.join(dst, item)
+                          if os.path.exists(item_dst):
+                              shutil.rmtree(item_dst)
+                          shutil.move(os.path.join(src, item), item_dst)
+                      os.rmdir(src)
+                  else:
+                      if os.path.exists(dst):
+                          shutil.rmtree(dst)
+                      shutil.move(src, dst)
+                  print(f'평탄화: {src} -> {dst}')
+              os.rmdir(UPLOAD)
           moved = 0
           for level in os.listdir(BASE):
               level_path = os.path.join(BASE, level)
