@@ -70,7 +70,7 @@
 2. `New repository secret` 클릭
 3. Name: `TEAM_REPO_PAT` / Secret: 3번에서 복사한 토큰 → `Add secret`
 
-#### **5. 개인 저장소에 자동 분류 및 전송 워크플로우 추가**
+#### **6. 개인 저장소에 자동 분류 및 전송 워크플로우 추가**
  
 1. **개인 저장소** Code 탭 → `Add file` → `Create new file`
 2. 파일 경로에 `.github/workflows/classify-and-sync.yml` 입력 (슬래시 입력 시 폴더 자동 생성)
