@@ -14,26 +14,23 @@
 ---
  
 이 저장소는 **백준허브(BaekjoonHub)** 크롬 확장으로 풀이를 자동 업로드함.
-프로그래머스에서 문제를 풀고 통과하면 코드와 문제 요약이 **내 fork에 자동 커밋**되고,
-GitHub Actions가 유형별로 폴더를 정리해줌.
+프로그래머스에서 문제를 풀고 통과하면 코드와 문제 요약이 **본인 개인 저장소에 자동 커밋**되고,
+개인 저장소의 GitHub Actions가 팀 저장소로 자동 전송함.
+이후 팀 저장소에서 유형별 폴더 정리까지 자동으로 이루어짐.
  
-> 문제 풀기 → 내 fork에 자동 커밋 → 자동 분류 → 주 1회 PR → 리뷰 → main 머지
+> 문제 풀기 → 본인 개인 저장소에 자동 커밋 → 팀 저장소로 자동 전송 → 유형별 자동 분류
 
-백준허브는 **본인 계정 소유의 저장소**에만 연동할 수 있어서, 팀 저장소에 직접 연결되지 않음.
-그래서 각자 fork를 하나씩 만들어 쓰는 구조.
+백준허브는 **본인 계정 소유의 저장소**에만 연동 가능함.
+팀 저장소(Organization 소유)나 fork에는 자동 커밋이 되지 않아서,
+각자 개인 저장소를 중간 다리로 쓰는 구조임.
  
-#### **1. 저장소 Fork**
+#### **1. 개인 저장소 생성**
  
-이 저장소 페이지 우측 상단의 **Fork** 버튼 클릭.
-본인 계정에 `{본인_아이디}/2026-Algorithm-Study` 생성.
+1. GitHub 우측 상단 `+` → `New repository`
+2. 이름은 자유 (예: `algorithm-study`). **Private 가능**
+3. `Add a README file` 체크 후 생성 (빈 저장소면 백준허브 첫 푸시가 실패할 수 있음)
  
-#### **2. fork에서 Actions 활성화**
- 
-fork한 저장소의 **Actions** 탭으로 이동해
-`I understand my workflows, go ahead and enable them` 버튼을 한 번 눌러줌.
-이걸 안 하면 자동 분류가 동작하지 않음.
- 
-#### **3. 백준허브 설치 및 연동**
+#### **2. 백준허브 설치 및 연동**
  
 1. 크롬 웹스토어에서 [백준허브](https://chromewebstore.google.com/detail/ccammcjdkpgjmcpijpahlehmapgmphmk) 설치
 2. 확장 팝업 → `Authenticate with GitHub` → 인증
@@ -42,30 +39,107 @@ fork한 저장소의 **Actions** 탭으로 이동해
 5. **프로그래머스** 칸에 아래 내용을 입력하고 `저장`
 
 ```
-    Programmers/{본인_영문_이름}/${level}/${id}. ${title}
+    Programmers/${level}/${id}. ${title}
 ```
  
-- `{본인_영문_이름}` 부분만 자기 이름으로 바꿈. (예: `Programmers/sujeong/...`)
+- **전원 동일하게 입력함. 본인 이름을 넣지 않음.**
+  (이름은 다음 단계의 전송 스크립트가 자동으로 붙여줌.)
 - `${level}`, `${id}`, `${title}` 은 **그대로** 입력. 백준허브가 알아서 치환함.
- 
-6. 프로그래머스에서 문제 하나를 풀어 제출한 뒤,
-내 fork의 **Actions** 탭에서 `Auto Classify Programmers Problems` 실행이 초록불인지 확인하기.
-Code 탭에 `Programmers/{이름}/{유형}/{문제번호}. {문제명}/` 이 생겼으면 성공.
 
-#### **4. 팀 저장소에 올리기 (주 1회)**
+#### **3. 팀 저장소 접근 토큰 발급**
  
-1. 내 fork 페이지에서 `Contribute` → `Open pull request`
-2. base 저장소가 `TeamAlgoco/2026-Algorithm-Study` 의 `main` 인지 확인
-3. PR 제목은 아래 컨벤션에 맞춰 작성 → `Create pull request`
-4. 리뷰 후 머지되면, fork 페이지의 **`Sync fork`** 버튼으로 최신 main을 내 fork에 반영
+1. GitHub 우측 상단 프로필 → `Settings` → 좌측 맨 아래 `Developer settings`
+2. `Personal access tokens` → `Fine-grained tokens` → `Generate new token`
+3. 아래와 같이 설정 후 생성
+    - Token name: 자유 (예: `algo-study-sync`)
+    - **Resource owner: `TeamAlgoco`** ← 본인 계정이 아니라 Organization 선택. 여기가 제일 중요함
+    - Expiration: 스터디 종료 이후 날짜로 설정
+    - Repository access: `Only select repositories` → `2026-Algorithm-Study`
+    - Permissions → Repository permissions → **`Contents`: `Read and write`**
+4. 생성된 토큰(`github_pat_...`)을 복사해둠.
+5. Resource owner를 Organization으로 선택하면 토큰이 **승인 대기** 상태일 수 있음.
+   메인 관리자([@sdoubleoj](https://github.com/sdoubleoj))에게 승인 요청하기
+
+#### **4. 개인 저장소에 토큰 등록**
+ 
+1. **개인 저장소** → `Settings` → `Secrets and variables` → `Actions`
+2. `New repository secret` 클릭
+3. Name: `TEAM_REPO_PAT` / Secret: 3번에서 복사한 토큰 → `Add secret`
+
+#### **5. 개인 저장소에 전송 워크플로우 추가**
+ 
+1. **개인 저장소** Code 탭 → `Add file` → `Create new file`
+2. 파일 경로에 `.github/workflows/sync.yml` 입력 (슬래시 입력 시 폴더 자동 생성)
+3. 아래 내용을 통째로 붙여넣되, **4번째 줄의 `MY_NAME` 값만 본인 영문 이름으로 수정**
+4. `Commit changes`
+
+```yaml
+    name: Sync to team repo
+ 
+    env:
+      MY_NAME: sujeong   # 본인 영문 이름으로 수정 (폴더명으로 사용됨)
+ 
+    on:
+      push:
+        branches: [main]
+        paths: ['Programmers/**']
+ 
+    concurrency:
+      group: sync-to-team
+      cancel-in-progress: false
+ 
+    jobs:
+      sync:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+            with: { path: solo, fetch-depth: 2 }
+ 
+          - uses: actions/checkout@v4
+            with:
+              repository: TeamAlgoco/2026-Algorithm-Study
+              token: ${{ secrets.TEAM_REPO_PAT }}
+              path: team
+ 
+          - name: Copy solutions
+            run: |
+              mkdir -p "team/Programmers/${MY_NAME}"
+              rsync -a --exclude '.git' solo/Programmers/ "team/Programmers/${MY_NAME}/"
+ 
+          - name: Commit and push
+            run: |
+              CHANGED=$(cd solo && git show --name-only --pretty="" HEAD \
+                        | grep '^Programmers/' | head -1)
+              ID=$(echo "$CHANGED"    | sed -n 's#.*/\([0-9]*\)\. \([^/]*\)/.*#\1#p')
+              TITLE=$(echo "$CHANGED" | sed -n 's#.*/\([0-9]*\)\. \([^/]*\)/.*#\2#p')
+              cd team
+              git config user.name  "${{ github.actor }}"
+              git config user.email "${{ github.actor }}@users.noreply.github.com"
+              git add -A
+              git diff --staged --quiet && { echo "변경 없음"; exit 0; }
+              git commit -m "[Programmers-${ID:-0000}] ${TITLE:-solution}"
+              git pull --rebase origin main
+              git push origin main
+```
+
+#### **6. 동작 확인**
+ 
+프로그래머스에서 문제 하나를 풀어 제출한 뒤, 순서대로 확인:
+ 
+1. **개인 저장소** Code 탭에 `Programmers/{레벨}/{문제번호}. {문제명}/` 생성됨
+2. **개인 저장소** Actions 탭에서 `Sync to team repo` 초록불
+3. **팀 저장소**에 `[Programmers-문제번호] 문제명` 커밋 추가됨
+4. **팀 저장소** Actions 탭에서 `Auto Classify Programmers Problems` 초록불
+5. 팀 저장소 Code 탭에 `Programmers/{내이름}/{유형}/{문제번호}. {문제명}/` 생성 → 성공!
 
 #### **주의 사항**
  
-- 3.5번 템플릿 설정을 빠뜨리면 자동 분류가 되지 않고 Actions 로그에 경고가 남음.
-  파일이 엉뚱한 곳에 있다면 이 설정부터 확인.
+- 저장 경로 템플릿(2-5번)에 **이름을 넣지 말 것**. 이름은 `sync.yml`의 `MY_NAME` 한 곳에서만 지정함.
 - 템플릿은 브라우저에 저장되는 값임. **PC나 크롬 프로필이 바뀌면 다시 설정**해야 함.
-- 저장소를 clone 할 필요 없음. 백준허브는 GitHub API로 직접 푸시함.
-- 자동 분류 워크플로우는 `.github/workflows/classify-programmers.yml` 에 있음.
+- 팀 저장소를 clone 할 필요 없음. 모든 전송은 자동임.
+- 토큰이 만료되면 전송이 실패함(개인 저장소 Actions에 빨간불).
+  3~4번 절차로 재발급해서 시크릿 값만 교체하면 됨.
+- 자동 분류 워크플로우는 팀 저장소의 `.github/workflows/classify-programmers.yml` 에 있음.
   건드리면 전원의 자동화가 깨지니 수정이 필요하면 논의 요청 바람.
 
 > 백준허브 연동 및 자동 분류 워크플로우는 [@SamK5678](https://github.com/SamK5678) 님이 구축해주셨습니다🥹
@@ -80,11 +154,11 @@ Code 탭에 `Programmers/{이름}/{유형}/{문제번호}. {문제명}/` 이 생
 2. 주마다 5문제씩 선정해서 문제 풀이를 진행함. 회의 시간에는 각자 1문제 풀이 설명.
     1. 개념+알고리즘+풀이 방식 자세하게 설명하기.
     2. 만약 상대가 이해 못하면 이해할 때까지 설명해야 함.
-3. 깃허브 활용해서 Pull Request로 코드 리뷰 진행함.
-    1. 주 1회, 본인 fork에서 팀 저장소로 PR을 올림.
+3. 깃허브에 올라온 서로의 코드에 리뷰를 진행함.
+    1. 팀 저장소에서 상대방의 커밋 또는 파일에 코멘트를 달아 리뷰함.
     2. 서로에 대한 코드 리뷰는 금요일까지 완료하기.
-    3. 반드시 코드 리뷰 후에 main branch로 merge.
 4. 코드 리뷰 받은 것에 대해서는 다음 회의 전까지 수정해서 다시 깃허브에 올리기.
+   (같은 문제를 다시 제출하면 자동으로 최신 코드로 교체됨)
 
 #### **설명 방식**
 
@@ -101,19 +175,13 @@ Code 탭에 `Programmers/{이름}/{유형}/{문제번호}. {문제명}/` 이 생
 - 만약 주차에 해당하는 문제 풀이가 미완료 시, 회의 당일에 직접 문제 풀이 진행해야 함.
 - 끝날 때까지 회의는 끝나지 않음.…
 
-## **PR 규칙 및 Commit Message 규칙**
+## **Commit Message 규칙**
 
 ---
 
-#### **Pull Request**
-
-- [Programmers-폴더명] 이름
-
-#### **Commit Message**
-
 - [Programmers-문제번호] 문제명
-- 백준허브가 올리는 커밋 메시지는 자동 생성되므로 이 규칙의 대상이 아님.
-  직접 커밋할 때만 위 형식을 지킴.
+- 자동 전송되는 커밋은 위 형식으로 자동 생성됨.
+  직접 커밋할 일이 있을 때(README 수정 등)만 신경 쓰면 됨.
 
 ## **파일 및 폴더 구조**
 
