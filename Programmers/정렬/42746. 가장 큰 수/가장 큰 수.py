@@ -18,3 +18,7 @@ def solution(numbers):
     return answer
 
 # 두 번째 방법
+#def solution(numbers):
+#    nums = sorted(map(str,numbers), key=lambda x: x*3, reverse =True)
+#    answer="".join(nums)
+#    return "0" if answer[0]=="0" else answer
