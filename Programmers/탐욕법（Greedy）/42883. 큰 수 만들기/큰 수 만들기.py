@@ -1,9 +1,9 @@
 def solution(number, k):
-    len_x = len(number)-k
-    x=[]
+    lst = []
+    n = len(number)-k
     for c in number:
-        while x and c>x[-1] and k>0:
-            x.pop()
+        while k>0 and lst and c > lst[-1]:
             k-=1
-        x.append(c)
-    return "".join(x[:len_x])
+            lst.pop()
+        lst.append(c)
+    return "".join(lst[:n])
