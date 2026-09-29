@@ -14,8 +14,6 @@
 
 def solution(genres, plays):
     total = {x:0 for x in genres}
-    lst = []
-    best = []
     for genre, play in zip(genres,plays):
         total[genre] += play
     total = sorted(total, key=total.get, reverse=True)
