@@ -1,14 +1,12 @@
 def solution(name):
-    cnt = 0
-    q,x =[], []
-    for i,c in enumerate(name):
-        dif = ord(c)-ord("A")
-        if dif!=0:
-            q.append(i)
-            cnt += min(dif, 26 - dif)
-    for k,j in enumerate(q):
-        nxt = q[k+1] if k+1<len(q) else len(name)
-        x.append(min(j+len(name)-(nxt-j), 2*(len(name)-nxt)+j))
-    if x:
-        cnt+=min(x)
-    return cnt
+    total = sum(13-abs(ord(c)-ord("N")) for c in name)
+    n=len(name)
+    move = n-1 # 오른쪽으로 끝까지 이동하는 경우
+    for i in range(n):
+        next_idx = i+1
+        while next_idx < n and name[next_idx] == "A":
+            next_idx += 1
+        right =i
+        left = n - next_idx
+        move=min(move, 2*right+left, 2*left+right)
+    return total + move
