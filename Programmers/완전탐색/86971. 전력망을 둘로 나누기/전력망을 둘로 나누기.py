@@ -1,15 +1,16 @@
 def solution(n, wires):
-    result= []
-    for i in range(len(wires)):
-        lst = wires[:i]+wires[i+1:]
-        graph = [1]
-        def dfs(cur):
-            for node in lst:
+    lst=[]
+    def graph(start,lst):
+        for node in lst:
+            if start in node:
                 a,b = node
-                nxt=b if a==cur else a
-                if cur in node and nxt not in graph:
-                    graph.append(nxt)
-                    dfs(nxt)
-        dfs(1)
-        result.append(abs(n-2*len(graph)))
-    return min(result)
+                end=b if start==a else a
+                if end not in g:
+                    g.append(end)
+                    graph(end,lst)
+    for i in range(len(wires)):
+        g=[1]
+        remain = wires[:i] + wires[i+1:]
+        graph(g[0],remain)
+        lst.append(abs(n-2*len(g)))
+    return min(lst)
